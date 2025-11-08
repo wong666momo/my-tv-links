@@ -1,43 +1,28 @@
 name: Update 8TV Stream Link
 
-# 触发工作流的条件
 on:
-  # 允许手动触发
   workflow_dispatch:
-  # 设置定时任务，使用Cron语法
-  # 下面的意思是：在每小时的第15分钟自动运行一次
   schedule:
     - cron: '*/15 * * * *'
 
-# 定义工作流要执行的任务
 jobs:
   update-link:
-    # 任务运行的环境
     runs-on: ubuntu-latest
-
-    # 任务包含的步骤
     steps:
-      # 第一步：检出（下载）你的代码仓库，这样才能在里面创建文件
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 第二步：设置Python环境
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
-      # 第三步：安装Streamlink
       - name: Install Streamlink
         run: pip install streamlink
 
-      # 第四步：运行Streamlink获取链接，并保存到文件
-      # 注意：如果Tonton的网页地址变了，需要修改下面的URL
       - name: Get stream link and save to file
-     - name: Get stream link and save to file
         run: streamlink --http-header "User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36" --http-header "Referer=https://www.tonton.com.my/" --stream-url "https://www.tonton.com.my/live/8tv" best > 8tv.m3u8 || echo "Streamlink failed but the job will not fail."
 
-      # 第五步：自动将生成的文件提交并推送到你的仓库
       - name: Commit and push if changed
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
